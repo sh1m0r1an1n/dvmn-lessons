@@ -1,6 +1,3 @@
-password = input('Введите пароль: ')
-
-
 def is_very_long(password):
     return len(password) > 12
 
@@ -27,6 +24,8 @@ def has_symbols(password):
 
 
 def main():
+    password = input('Введите пароль: ')
+    
     functions = [
         is_very_long(password),
         has_digit(password),
