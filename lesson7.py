@@ -4,12 +4,6 @@ from dotenv import load_dotenv
 from pytimeparse import parse
 
 
-load_dotenv()
-TG_TOKEN = os.getenv('TG_TOKEN')
-TG_CHAT_ID = os.getenv('TG_CHAT_ID')
-BOT = ptbot.Bot(TG_TOKEN)
-
-
 def render_progressbar(total, iteration, prefix='', suffix='',
                        length=30, fill='█', zfill='░'):
     iteration = min(total, iteration)
@@ -42,6 +36,10 @@ def the_end(chat_id, message_id, text):
 
 
 def main():
+    load_dotenv()
+    TG_TOKEN = os.getenv('TG_TOKEN')
+    TG_CHAT_ID = os.getenv('TG_CHAT_ID')
+    BOT = ptbot.Bot(TG_TOKEN)
     BOT.reply_on_message(reply)
     BOT.run_bot()
 
