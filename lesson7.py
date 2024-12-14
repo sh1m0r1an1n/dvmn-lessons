@@ -14,34 +14,33 @@ def render_progressbar(total, iteration, prefix='', suffix='',
     return '{0} |{1}| {2}% {3}'.format(prefix, pbar, percent, suffix)
 
 
-def reply(chat_id, text):
+def reply(chat_id, text, bot):
     text = parse(text)
     message = 'Запускаю таймер...' + '\n' + render_progressbar(text, 0)
-    message_id = BOT.send_message(chat_id, message)
-    BOT.create_countdown(text, notify_progress, chat_id=chat_id,
-                         message_id=message_id, text=text)
-    BOT.create_timer(text+0.01, the_end, chat_id=chat_id,
-                     message_id=message_id, text=text)
+    message_id = bot.send_message(chat_id, message)
+    bot.create_countdown(text, notify_progress, chat_id=chat_id,
+                         message_id=message_id, text=text, bot=bot)
+    bot.create_timer(text+0.01, the_end, chat_id=chat_id,
+                     message_id=message_id, text=text, bot=bot)
 
 
-def notify_progress(secs, chat_id, message_id, text):
+def notify_progress(secs, chat_id, message_id, text, bot):
     message = "Осталось секунд: {}".format(secs) + '\n' \
               + render_progressbar(text, text-secs)
-    BOT.update_message(chat_id, message_id, message)
+    bot.update_message(chat_id, message_id, message)
 
 
-def the_end(chat_id, message_id, text):
+def the_end(chat_id, message_id, text, bot):
     message = 'Время вышло!' + '\n' + render_progressbar(text, text)
-    BOT.update_message(chat_id, message_id, message)
+    bot.update_message(chat_id, message_id, message)
 
 
 def main():
     load_dotenv()
     TG_TOKEN = os.getenv('TG_TOKEN')
-    TG_CHAT_ID = os.getenv('TG_CHAT_ID')
-    BOT = ptbot.Bot(TG_TOKEN)
-    BOT.reply_on_message(reply)
-    BOT.run_bot()
+    bot = ptbot.Bot(TG_TOKEN)
+    bot.reply_on_message(reply, bot=bot)
+    bot.run_bot()
 
 
 if __name__ == '__main__':
