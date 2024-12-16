@@ -37,8 +37,8 @@ def the_end(chat_id, message_id, text, bot):
 
 def main():
     load_dotenv()
-    TG_TOKEN = os.getenv('TG_TOKEN')
-    bot = ptbot.Bot(TG_TOKEN)
+    tg_token = os.getenv('tg_token')
+    bot = ptbot.Bot(tg_token)
     bot.reply_on_message(reply, bot=bot)
     bot.run_bot()
 
