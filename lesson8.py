@@ -39,11 +39,8 @@ def main():
     coffees = json.loads(coffees)
 
     address = input('Где вы находитесь? ')
-
     address = fetch_coordinates(apikey, address)
-
     print('Ваши координаты: ', address)
-
     address = [address[1], address[0]]
 
     coffee_list = []
@@ -59,7 +56,6 @@ def main():
         coffee_list.append(coffee_new)
 
     sorted_coffee_list = sorted(coffee_list, key=discance_to_coffee)
-
     the_nearest_5_coffee = sorted_coffee_list[:5]
 
     m = folium.Map([address[0], address[1]], zoom_start=12)
