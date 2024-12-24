@@ -40,7 +40,6 @@ def main():
 
     address = input('Где вы находитесь? ')
     address = fetch_coordinates(apikey, address)
-    print('Ваши координаты: ', address)
     address = [address[1], address[0]]
 
     coffee_list = []
@@ -60,35 +59,11 @@ def main():
 
     m = folium.Map([address[0], address[1]], zoom_start=12)
 
-    folium.Marker(
-        location=[the_nearest_5_coffee[0]['latitude'],
-                  the_nearest_5_coffee[0]['longitude']],
-        icon=folium.Icon(icon="white"),
-    ).add_to(m)
-
-    folium.Marker(
-        location=[the_nearest_5_coffee[1]['latitude'],
-                  the_nearest_5_coffee[1]['longitude']],
-        icon=folium.Icon(color="green"),
-    ).add_to(m)
-
-    folium.Marker(
-        location=[the_nearest_5_coffee[2]['latitude'],
-                  the_nearest_5_coffee[2]['longitude']],
-        icon=folium.Icon(color="red"),
-    ).add_to(m)
-
-    folium.Marker(
-        location=[the_nearest_5_coffee[3]['latitude'],
-                  the_nearest_5_coffee[3]['longitude']],
-        icon=folium.Icon(color="black"),
-    ).add_to(m)
-
-    folium.Marker(
-        location=[the_nearest_5_coffee[4]['latitude'],
-                  the_nearest_5_coffee[4]['longitude']],
-        icon=folium.Icon(color="pink"),
-    ).add_to(m)
+    for coffee in the_nearest_5_coffee:
+        folium.Marker(
+            location=[coffee['latitude'],
+                      coffee['longitude']],
+        ).add_to(m)
 
     m.save("index.html")
 
