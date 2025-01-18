@@ -4,16 +4,6 @@ from dotenv import load_dotenv
 from urllib.parse import urlparse
 
 
-def api_request(url_method: str, params: dict) -> dict:
-    try:
-        response = requests.get(url_method, params=params)
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as error:
-        print(f"Ошибка при запросе к API: {error}")
-        return {}
-
-
 def shorten_link(token: str, url: str) -> str:
     params = {
         'url': url,
@@ -21,29 +11,33 @@ def shorten_link(token: str, url: str) -> str:
         'v': '5.199'
     }
     url_method = 'https://api.vk.com/method/utils.getShortLink'
-    response_data = api_request(url_method, params)
 
-    if 'response' in response_data:
-        return response_data['response']['short_url']
-    else:
-        raise ValueError("Ошибка API: не удалось получить короткую ссылку")
+    response = requests.get(url_method, params=params)
+    response.raise_for_status()
+    response_data = response.json()
+
+    if 'error' in response_data:
+        raise ValueError(f"Ошибка API: {response_data['error']['error_msg']}")
+    return response_data['response']['short_url']
 
 
-def count_clicks(token: str, short_url_key: str) -> int:
+def count_clicks(token: str, url: str) -> int:
     params = {
-        'key': short_url_key,
+        'key': url,
         'interval': 'forever',
         'access_token': token,
         'v': '5.199'
     }
     url_method = 'https://api.vk.com/method/utils.getLinkStats'
-    response_data = api_request(url_method, params)
 
-    if 'response' in response_data:
-        stats = response_data['response']['stats']
-        return stats[0]['views'] if stats else 0
-    else:
-        raise ValueError("Ошибка API: не удалось получить данные о кликах")
+    response = requests.get(url_method, params=params)
+    response.raise_for_status()
+    response_data = response.json()
+
+    if 'error' in response_data:
+        raise ValueError(f"Ошибка API: {response_data['error']['error_msg']}")
+    stats = response_data['response']['stats']
+    return stats[0]['views'] if stats else 0
 
 
 def validate_url(url: str) -> bool:
@@ -79,19 +73,16 @@ def main():
             print('Сокращенная ссылка: ', short_link)
         else:
             short_link = url
-    except (requests.exceptions.RequestException, ValueError) as error:
-        print(f'Ошибка при создании короткой ссылки: {error}')
-        return
 
-    parsed_url = urlparse(short_link)
-    short_url_key = parsed_url.path.lstrip("/")
+        parsed_url = urlparse(short_link)
+        short_url_key = parsed_url.path.lstrip("/")
 
-    try:
         if is_shorten_link(url):
             click_count = count_clicks(token, short_url_key)
-            print(f'Количество кликов по ссылке: {click_count}')
+            print('Количество кликов по ссылке: ', click_count)
+
     except (requests.exceptions.RequestException, ValueError) as error:
-        print(f'Ошибка при подсчете кликов: {error}')
+        print(f'Ошибка: {error}')
 
 
 if __name__ == '__main__':
