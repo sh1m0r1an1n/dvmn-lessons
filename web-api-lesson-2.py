@@ -63,11 +63,9 @@ def main():
 
     try:
         if is_shorten_link(token, key):
-            click_count = count_clicks(token, key)
-            print('Количество кликов по ссылке: ', click_count)
+            print('Количество кликов по ссылке: ', count_clicks(token, key))
         else:
-            short_link = shorten_link(token, url)
-            print('Сокращенная ссылка: ', short_link)
+            print('Сокращенная ссылка: ', shorten_link(token, url))
 
     except requests.exceptions.RequestException as error:
         print(f'Ошибка: {error}')
