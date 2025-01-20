@@ -21,9 +21,9 @@ def shorten_link(token: str, url: str) -> str:
     return response_data['response']['short_url']
 
 
-def count_clicks(token: str, url: str) -> int:
+def count_clicks(token: str, key: str) -> int:
     params = {
-        'key': url,
+        'key': key,
         'interval': 'forever',
         'access_token': token,
         'v': '5.199'
@@ -59,9 +59,9 @@ def main():
     token = os.environ['VK_TOKEN']
 
     url = input('Введите ссылку: ')
+    key = urlparse(url).path.lstrip("/")
 
     try:
-        key = urlparse(url).path.lstrip("/")
         if is_shorten_link(token, key):
             click_count = count_clicks(token, key)
             print('Количество кликов по ссылке: ', click_count)
